@@ -189,7 +189,7 @@ pub fn convert_ed_sk_to_curve25519(sk: &[u8; SCALARMULTBYTES]) -> [u8; SCALARMUL
 
 /// Converts Ed25519 keypair to Curve25519 keypair.
 #[allow(clippy::needless_pass_by_value)]
-pub fn convert_ed_keypair_to_curve25519(pk: PublicKey, sk: SecretKey) -> (PublicKey, SecretKey) {
+pub fn convert_ed_keypair_to_curve25519(pk: &PublicKey, sk: &SecretKey) -> (PublicKey, SecretKey) {
     let pk = convert_ed_pk_to_curve25519(&pk.0);
 
     let mut secret_key = [0; SCALARMULTBYTES];
@@ -577,7 +577,7 @@ mod test {
         use crate::crypto::scalarmult::curve25519::{scalarmult_base, GroupElement, Scalar};
 
         let (pk, sk) = gen_keypair();
-        let (PublicKey(ref pk), SecretKey(ref sk)) = convert_ed_keypair_to_curve25519(pk, sk);
+        let (PublicKey(ref pk), SecretKey(ref sk)) = convert_ed_keypair_to_curve25519(&pk, &sk);
         let secret_key = Scalar::from_slice(&sk[..SCALARMULTBYTES]).unwrap();
         let GroupElement(public_key) = scalarmult_base(&secret_key);
         assert_eq!(pk, &public_key);
